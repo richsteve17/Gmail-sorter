@@ -4,9 +4,446 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Gmail Sorter">
     <title>Gmail Sorter Pro</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Gmail Sorter - iOS Optimized with Dark Mode */
+        :root {
+            --bg-primary: #f2f2f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e5e5ea;
+            --text-primary: #1c1c1e;
+            --text-secondary: #3c3c43;
+            --text-tertiary: #8e8e93;
+            --border-color: #c6c6c8;
+            --accent-blue: #007aff;
+            --accent-red: #ff3b30;
+            --shadow: rgba(0,0,0,0.1);
+            --shadow-heavy: rgba(0,0,0,0.2);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #000000;
+                --bg-secondary: #1c1c1e;
+                --bg-tertiary: #2c2c2e;
+                --text-primary: #ffffff;
+                --text-secondary: #ebebf5;
+                --text-tertiary: #8e8e93;
+                --border-color: #38383a;
+                --accent-blue: #0a84ff;
+                --accent-red: #ff453a;
+                --shadow: rgba(0,0,0,0.3);
+                --shadow-heavy: rgba(0,0,0,0.5);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Login Screen */
+        .login-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-container h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .google-signin-btn {
+            background: white;
+            color: #1c1c1e;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .google-signin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-heavy);
+        }
+
+        .google-signin-btn:active {
+            transform: translateY(0);
+        }
+
+        #apiStatus {
+            margin-top: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        #errorMessage {
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--accent-red);
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Main App Header */
+        .app-header {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .app-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            color: var(--text-primary);
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .category-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pill {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .pill:hover {
+            background: var(--border-color);
+        }
+
+        .pill.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Email List */
+        .email-list {
+            padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-primary);
+        }
+
+        .email-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .email-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+            color: white;
+        }
+
+        /* Badge Colors */
+        .badge-casino { background: #9333ea; }
+        .badge-otp { background: #ea580c; }
+        .badge-social { background: #ec4899; }
+        .badge-shopping { background: #10b981; }
+        .badge-promo { background: #eab308; color: #000; }
+        .badge-finance { background: #ef4444; }
+        .badge-work { background: #6366f1; }
+        .badge-personal { background: #14b8a6; }
+        .badge-newsletter { background: #06b6d4; }
+        .badge-general { background: #6b7280; }
+
+        .email-sender {
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .email-subject {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .email-snippet {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .email-date {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        /* Email Modal */
+        .email-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .email-modal > div {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px var(--shadow-heavy);
+            color: var(--text-primary);
+        }
+
+        .email-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            word-break: break-word;
+            color: var(--text-primary);
+        }
+
+        .email-modal .email-sender,
+        .email-modal .email-date {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .email-modal .email-body {
+            white-space: pre-wrap;
+            margin: 20px 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .email-modal .email-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .email-modal button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .email-modal button:hover {
+            transform: translateY(-1px);
+        }
+
+        .email-modal button:active {
+            transform: translateY(0);
+        }
+
+        .email-modal button[onclick*="deleteEmail"] {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .email-modal button[onclick*="window.open"] {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .email-modal button[onclick*="remove()"] {
+            background: var(--text-tertiary);
+            color: white;
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-tertiary);
+            border-top: 4px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 375px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+            
+            .login-container h1 {
+                font-size: 2rem;
+            }
+            
+            .email-item {
+                padding: 0.75rem;
+            }
+            
+            .email-modal {
+                padding: 12px;
+            }
+        }
+
+        /* PWA Support */
+        @media (display-mode: standalone) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Login Screen -->
@@ -17,7 +454,9 @@
             <p class="subtitle">Casino • OTP • Social • Shopping • Auto-sorted</p>
             <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
             <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
-            <div id="apiStatus" style="background: #f0f0f0; padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;"></div>
+            <div id="apiStatus" style="background: var(--bg-tertiary); padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;">
+                Using secure proxy for AI categorization
+            </div>
         </div>
     </div>
 
@@ -34,14 +473,13 @@
     </div>
 
     <script>
-        // Configuration - NO API KEYS EXPOSED
+        // Configuration
         const CONFIG = {
             GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
             GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly',
-            MAX_EMAILS: 500,,
+            MAX_EMAILS: 500,
         };
 
-        // Email Categories
         const EMAIL_CATEGORIES = {
             casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook'] },
             otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time'] },
@@ -58,21 +496,8 @@
         let accessToken = null;
         let currentEmails = [];
 
-        // Debug logger
-        function log(message) {
-            console.log(`[Gmail Sorter] ${new Date().toLocaleTimeString()}: ${message}`);
-        }
-
-        // API Status Check
-        function checkAPIStatus() {
-            const status = document.getElementById('apiStatus');
-            status.innerHTML = '✅ Using secure proxy for AI categorization';
-            status.style.background = '#d4edda';
-        }
-
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            checkAPIStatus();
             document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
             document.getElementById('signOutBtn').addEventListener('click', signOut);
 
@@ -80,15 +505,13 @@
                 loadEmails();
             } else if (localStorage.getItem('gmail_access_token')) {
                 accessToken = localStorage.getItem('gmail_access_token');
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
+                showApp();
                 loadEmails();
             }
         });
 
-        // OAuth Functions
+        // OAuth
         function signInWithGoogle() {
-            log('Starting OAuth flow');
             const clientId = CONFIG.GOOGLE_CLIENT_ID;
             const redirectUri = window.location.origin + window.location.pathname;
             const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
@@ -96,29 +519,21 @@
         }
 
         function signOut() {
-            log('Signing out');
             localStorage.removeItem('gmail_access_token');
-            showLogin();
+            location.reload();
         }
 
         function handleOAuth() {
             const hash = window.location.hash;
             if (hash && hash.includes('access_token')) {
-                log('OAuth callback detected');
                 const params = new URLSearchParams(hash.substring(1));
                 accessToken = params.get('access_token');
                 localStorage.setItem('gmail_access_token', accessToken);
                 window.history.replaceState(null, null, window.location.pathname);
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
+                showApp();
                 return true;
             }
             return false;
-        }
-
-        function showLogin() {
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('appScreen').classList.add('hidden');
         }
 
         function showApp() {
@@ -130,11 +545,10 @@
         async function loadEmails() {
             try {
                 const token = accessToken || localStorage.getItem('gmail_access_token');
-                if (!token) throw new Error('No access token found');
+                if (!token) throw new Error('No access token');
 
-                showLoading();
+                document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
 
-                log('Fetching email list from Gmail API...');
                 const listResponse = await fetch(
                     `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
                     { headers: { 'Authorization': `Bearer ${token}` } }
@@ -143,27 +557,21 @@
                 if (!listResponse.ok) throw new Error(`Gmail API error: ${listResponse.status}`);
                 
                 const listData = await listResponse.json();
-                log(`Found ${listData.messages?.length || 0} emails`);
                 
                 if (!listData.messages || listData.messages.length === 0) {
-                    showEmptyState('No emails in inbox');
+                    document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;">📭</div><h2>No emails</h2></div>';
                     return;
                 }
 
-                log('Fetching full email details...');
                 const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
-                log(`Fetched ${emails.length} emails`);
-
-                log('Categorizing emails with AI...');
                 await categorizeWithGemini(emails);
-                log('Categorization complete');
 
                 currentEmails = emails;
                 renderEmails(emails);
                 
             } catch (error) {
-                log(`ERROR: ${error.message}`);
-                showError(error.message);
+                document.getElementById('errorMessage').textContent = error.message;
+                document.getElementById('errorMessage').style.display = 'block';
             }
         }
 
@@ -178,17 +586,7 @@
                 
                 const msg = await response.json();
                 
-                if (!msg.payload) {
-                    return {
-                        id,
-                        subject: '(No Subject)',
-                        from: 'Unknown',
-                        date: new Date(),
-                        snippet: 'Unable to load email',
-                        body: '',
-                        category: 'uncategorized'
-                    };
-                }
+                if (!msg.payload) return { id, subject: '(No Subject)', from: 'Unknown', date: new Date(), snippet: 'Unable to load', body: '', category: 'uncategorized' };
                 
                 const headers = msg.payload.headers;
                 
@@ -202,24 +600,13 @@
                     category: 'uncategorized'
                 };
             } catch (error) {
-                console.error(`Error fetching email ${id}:`, error);
-                return {
-                    id,
-                    subject: 'Error loading email',
-                    from: 'Unknown',
-                    date: new Date(),
-                    snippet: error.message,
-                    body: '',
-                    category: 'uncategorized'
-                };
+                return { id, subject: 'Error', from: 'Unknown', date: new Date(), snippet: error.message, body: '', category: 'uncategorized' };
             }
         }
 
         function extractBody(payload) {
             if (!payload) return '';
-            if (payload.body?.data) {
-                return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
-            }
+            if (payload.body?.data) return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
             if (payload.parts) {
                 for (let part of payload.parts) {
                     if (part.mimeType === 'text/plain' && part.body?.data) {
@@ -234,48 +621,29 @@
 
         // AI Categorization via Proxy
         async function categorizeWithGemini(emails) {
-            // ✅ YOUR VERCEL PROXY URL - DO NOT CHANGE
             const proxyUrl = 'https://express-js-on-vercel-wkdktjg7a-steve-colemans-projects.vercel.app/api/gemini/categorize';
             
-            // Prepare email data for proxy
-            const emailData = emails.map(e => ({
-                id: e.id,
-                subject: e.subject,
-                from: e.from,
-                snippet: e.snippet
-            }));
-            
+            const emailData = emails.map(e => ({ id: e.id, subject: e.subject, from: e.from, snippet: e.snippet }));
             const categories = Object.keys(EMAIL_CATEGORIES);
             
             try {
-                log(`Calling proxy at ${proxyUrl}`);
-                
                 const response = await fetch(proxyUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ emails: emailData, categories })
                 });
                 
-                // Check if proxy returned error
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Proxy error ${response.status}: ${errorText}`);
-                }
+                if (!response.ok) throw new Error(`Proxy ${response.status}`);
                 
                 const data = await response.json();
-                log(`Proxy returned ${data.results?.length || 0} categorizations`);
-                
-                // Apply categories to emails
                 data.results.forEach(result => {
                     if (result.category && EMAIL_CATEGORIES[result.category]) {
                         const email = emails.find(e => e.id === result.id);
                         if (email) email.category = result.category;
                     }
                 });
-                
             } catch (error) {
-                log(`AI categorization failed: ${error.message}`);
-                log('Falling back to keyword matching');
+                console.warn('AI failed, using keywords:', error.message);
                 categorizeWithKeywords(emails);
             }
         }
@@ -293,59 +661,40 @@
         }
 
         function renderEmails(emails) {
-    const pills = document.getElementById('categoryPills');
-    const list = document.getElementById('emailList');
-    
-    // Count emails per category
-    const counts = {};
-    Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
-    emails.forEach(e => {
-        // Only count if category exists
-        if (EMAIL_CATEGORIES[e.category]) {
-            counts[e.category]++;
-        } else {
-            counts['general']++; // Fallback
+            const pills = document.getElementById('categoryPills');
+            const list = document.getElementById('emailList');
+            
+            const counts = {};
+            Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
+            emails.forEach(e => {
+                if (EMAIL_CATEGORIES[e.category]) counts[e.category]++;
+                else counts['general']++;
+            });
+            
+            pills.innerHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>` + 
+                Object.entries(counts).filter(([_,c])=>c>0).map(([id,c]) => {
+                    const cat = EMAIL_CATEGORIES[id];
+                    return cat ? `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${c}</button>` : '';
+                }).join('');
+            
+            list.innerHTML = emails.map(e => {
+                const cat = EMAIL_CATEGORIES[e.category] || EMAIL_CATEGORIES.general;
+                return `
+                    <div class="email-item" onclick="openEmail('${e.id}')">
+                        <div class="email-header">
+                            <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
+                            <span class="email-date">${new Date(e.date).toLocaleDateString()}</span>
+                        </div>
+                        <div class="email-sender">${e.from.split('<')[0].trim()}</div>
+                        <div class="email-subject">${e.subject}</div>
+                        <div class="email-snippet">${e.snippet.substring(0,150)}...</div>
+                    </div>
+                `;
+            }).join('');
         }
-    });
-    
-    // Render category pills
-    let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
-    for (const [id, count] of Object.entries(counts)) {
-        if (count > 0) {
-            const cat = EMAIL_CATEGORIES[id];
-            if (cat) { // Safety check
-                pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
-            }
-        }
-    }
-    pills.innerHTML = pillsHTML;
-    
-    // Render email list with fallback
-    list.innerHTML = emails.map(e => {
-        // Use category or fallback
-        const cat = EMAIL_CATEGORIES[e.category] || EMAIL_CATEGORIES.general;
-        const sender = e.from.split('<')[0].trim();
-        return `
-            <div class="email-item" onclick="openEmail('${e.id}')">
-                <div class="email-header">
-                    <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
-                    <span class="email-date">${new Date(e.date).toLocaleDateString()}</span>
-                </div>
-                <div class="email-sender">${sender}</div>
-                <div class="email-subject">${e.subject}</div>
-                <div class="email-snippet">${e.snippet.substring(0,150)}...</div>
-            </div>
-        `;
-    }).join('');
-}
 
         function filterByCategory(category) {
-            // Update active pill
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            document.querySelector(`[onclick="filterByCategory('${category}')"]`)?.classList.add('active');
-            
-            // Filter and render
-            const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => e.category === category);
+            const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => (e.category || 'general') === category);
             renderEmails(filtered);
         }
 
@@ -353,74 +702,21 @@
             const email = currentEmails.find(e => e.id === emailId);
             if (!email) return;
             
-            log(`Opening email: ${email.subject}`);
-            
-            // Create modal for reading email
-            const modalHTML = `
-                <div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;padding:20px;overflow-y:auto;">
-                    <div style="background:white;padding:20px;border-radius:8px;max-width:600px;margin:0 auto;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                            <h2 style="margin:0;word-break:break-word;">${email.subject}</h2>
-                            <button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;padding:0;">×</button>
-                        </div>
-                        <div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div>
-                        <div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div>
-                        <hr style="margin:20px 0;">
-                        <div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                            <button onclick="deleteEmail('${email.id}')" style="background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete Email</button>
-                            <button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:#4285f4;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button>
-                            <button onclick="this.closest('.email-modal').remove()" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            const html = `<div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;padding:20px;overflow-y:auto;"><div style="background:var(--bg-secondary);padding:20px;border-radius:16px;max-width:600px;margin:0 auto;color:var(--text-primary);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h2 style="margin:0;word-break:break-word;color:var(--text-primary);">${email.subject}</h2><button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;padding:0;color:var(--text-primary);">×</button></div><div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div><div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div><hr style="margin:20px 0;border-color:var(--border-color);"><div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button onclick="deleteEmail('${email.id}')" style="background:var(--accent-red);color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete</button><button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:var(--accent-blue);color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button><button onclick="this.closest('.email-modal').remove()" style="background:var(--text-tertiary);color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button></div></div></div>`;
+            document.body.insertAdjacentHTML('beforeend', html);
         }
 
         async function deleteEmail(emailId) {
             if (!confirm('🗑️ Delete this email?')) return;
-            
-            log(`Deleting email: ${emailId}`);
-            
-            try {
-                const token = accessToken || localStorage.getItem('gmail_access_token');
-                const response = await fetch(
-                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`,
-                    { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
-                );
-                
-                if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
-                
-                // Remove from local state
+            const token = accessToken || localStorage.getItem('gmail_access_token');
+            const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`, {method:'POST', headers:{'Authorization':`Bearer ${token}`}});
+            if (response.ok) {
                 currentEmails = currentEmails.filter(e => e.id !== emailId);
                 renderEmails(currentEmails);
-                
-                // Close modal
-                document.querySelector('.email-modal')?.remove();
-                
-                log('Email deleted successfully');
-                
-            } catch (error) {
-                log(`Error deleting email: ${error.message}`);
-                alert('❌ Error deleting email: ' + error.message);
+                document.querySelector('.email-modal').remove();
+            } else {
+                alert('Delete failed');
             }
-        }
-
-        // UI Helpers
-        function showLoading() {
-            document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
-        }
-
-        function showEmptyState(message) {
-            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📭</div><h2>${message}</h2></div>`;
-        }
-
-        function showError(message) {
-            document.getElementById('errorMessage').textContent = message;
-            document.getElementById('errorMessage').style.display = 'block';
-            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;color:red;"><div style="font-size:3rem;margin-bottom:1rem;">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
         }
     </script>
 </body>
