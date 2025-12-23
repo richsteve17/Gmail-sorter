@@ -293,42 +293,51 @@
         }
 
         function renderEmails(emails) {
-            const pills = document.getElementById('categoryPills');
-            const list = document.getElementById('emailList');
-            
-            // Count emails per category
-            const counts = {};
-            Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
-            emails.forEach(e => counts[e.category]++);
-            
-            // Render category pills
-            let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
-            for (const [id, count] of Object.entries(counts)) {
-                if (count > 0) {
-                    const cat = EMAIL_CATEGORIES[id];
-                    pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
-                }
-            }
-            pills.innerHTML = pillsHTML;
-            
-            // Render email list
-            list.innerHTML = emails.map(e => {
-                const cat = EMAIL_CATEGORIES[e.category];
-                const sender = e.from.split('<')[0].trim();
-                const date = new Date(e.date).toLocaleDateString();
-                return `
-                    <div class="email-item" onclick="openEmail('${e.id}')">
-                        <div class="email-header">
-                            <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
-                            <span class="email-date">${date}</span>
-                        </div>
-                        <div class="email-sender">${sender}</div>
-                        <div class="email-subject">${e.subject}</div>
-                        <div class="email-snippet">${e.snippet.substring(0, 150)}...</div>
-                    </div>
-                `;
-            }).join('');
+    const pills = document.getElementById('categoryPills');
+    const list = document.getElementById('emailList');
+    
+    // Count emails per category
+    const counts = {};
+    Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
+    emails.forEach(e => {
+        // Only count if category exists
+        if (EMAIL_CATEGORIES[e.category]) {
+            counts[e.category]++;
+        } else {
+            counts['general']++; // Fallback
         }
+    });
+    
+    // Render category pills
+    let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
+    for (const [id, count] of Object.entries(counts)) {
+        if (count > 0) {
+            const cat = EMAIL_CATEGORIES[id];
+            if (cat) { // Safety check
+                pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
+            }
+        }
+    }
+    pills.innerHTML = pillsHTML;
+    
+    // Render email list with fallback
+    list.innerHTML = emails.map(e => {
+        // Use category or fallback
+        const cat = EMAIL_CATEGORIES[e.category] || EMAIL_CATEGORIES.general;
+        const sender = e.from.split('<')[0].trim();
+        return `
+            <div class="email-item" onclick="openEmail('${e.id}')">
+                <div class="email-header">
+                    <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
+                    <span class="email-date">${new Date(e.date).toLocaleDateString()}</span>
+                </div>
+                <div class="email-sender">${sender}</div>
+                <div class="email-subject">${e.subject}</div>
+                <div class="email-snippet">${e.snippet.substring(0,150)}...</div>
+            </div>
+        `;
+    }).join('');
+}
 
         function filterByCategory(category) {
             // Update active pill
