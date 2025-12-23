@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gmail Sorter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -13,12 +12,9 @@
             <div class="logo">📧</div>
             <h1>Gmail Sorter</h1>
             <p class="subtitle">Casino • OTP • Social • Shopping • Auto-sorted</p>
-            
-            <!-- FIX: Use a real button with ID instead of inline onclick -->
             <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
-            
-            <!-- DEBUG: Show errors -->
             <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
+            <div id="debugInfo" style="background: #f0f0f0; padding: 10px; margin-top: 20px; font-size: 12px; border-radius: 4px;"></div>
         </div>
     </div>
 
@@ -35,7 +31,7 @@
         // Configuration
         const CONFIG = {
             GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
-            GEMINI_API_KEY: 'AIzaSyAybN58q8KVEJ9yrlksgdPS5YX2K2vKNh0',
+            GEMINI_API_KEY: 'AIzaSyAybN58q8KVEJ9yrlksgdPS5YX2K2vKNh0', 
             GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.readonly',
             MAX_EMAILS: 50,
         };
@@ -52,53 +48,50 @@
 
         let accessToken = null;
 
-        // DEBUG: Check if script is loading
-        console.log('✅ App loaded. CONFIG:', CONFIG);
-        console.log('✅ Current URL:', window.location.href);
+        // Debug logger
+        function log(message) {
+            const debug = document.getElementById('debugInfo');
+            debug.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+            console.log(message);
+        }
 
-        // MAIN FIX: Attach event listener AFTER DOM loads
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM loaded, attaching event listeners');
+            log('✅ App loaded');
+            log('📍 Current URL: ' + window.location.href);
             
-            const signInBtn = document.getElementById('signInButton');
-            const signOutBtn = document.getElementById('signOutBtn');
-            
-            if (signInBtn) {
-                signInBtn.addEventListener('click', signInWithGoogle);
-                console.log('✅ Sign-in button listener attached');
-            } else {
-                console.error('❌ Sign-in button not found!');
-            }
-            
-            if (signOutBtn) {
-                signOutBtn.addEventListener('click', signOut);
-            }
-            
-            // Check OAuth callback
+            document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+            // Check for OAuth callback
             if (handleOAuth()) {
+                log('✅ OAuth callback detected');
                 loadEmails();
             } else if (localStorage.getItem('gmail_access_token')) {
                 accessToken = localStorage.getItem('gmail_access_token');
+                log('✅ Token found in storage');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
                 loadEmails();
+            } else {
+                log('ℹ️ No token, showing login screen');
             }
         });
 
         function signInWithGoogle() {
-            console.log('🔄 Starting Google sign-in...');
+            log('🔄 Starting sign-in...');
             
             const clientId = CONFIG.GOOGLE_CLIENT_ID;
             const redirectUri = window.location.origin + window.location.pathname;
             const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
-            
-            // IOS FIX: Use direct window.location instead of popup
             const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&prompt=consent`;
             
-            console.log('🌐 Redirecting to:', authUrl);
+            log('🌐 Redirect URL: ' + authUrl);
             window.location.href = authUrl;
         }
 
         function signOut() {
-            console.log('🚪 Signing out...');
+            log('🚪 Signing out');
             localStorage.removeItem('gmail_access_token');
             window.location.reload();
         }
@@ -106,11 +99,13 @@
         function handleOAuth() {
             const hash = window.location.hash;
             if (hash && hash.includes('access_token')) {
-                console.log('✅ OAuth callback detected');
+                log('✅ Found access token in URL');
                 const params = new URLSearchParams(hash.substring(1));
                 accessToken = params.get('access_token');
                 localStorage.setItem('gmail_access_token', accessToken);
                 window.history.replaceState(null, null, window.location.pathname);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
                 return true;
             }
             return false;
@@ -118,30 +113,42 @@
 
         async function loadEmails() {
             try {
-                console.log('📧 Loading emails...');
+                log('📧 Loading emails...');
                 
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
-
                 const token = accessToken || localStorage.getItem('gmail_access_token');
-                if (!token) throw new Error('Not signed in');
+                if (!token) throw new Error('No access token found');
+                log('✅ Using token: ' + token.substring(0, 20) + '...');
 
-                // Fetch emails
-                const response = await fetch(
+                // Fetch email list
+                log('⏳ Fetching email list...');
+                const listResponse = await fetch(
                     `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
                     { headers: { 'Authorization': `Bearer ${token}` } }
                 );
                 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                if (!listResponse.ok) {
+                    throw new Error(`Gmail API error: ${listResponse.status} - ${listResponse.statusText}`);
+                }
                 
-                const data = await response.json();
-                const emails = await Promise.all(data.messages.map(msg => fetchEmail(msg.id, token)));
+                const listData = await listResponse.json();
+                log('✅ Found ' + (listData.messages?.length || 0) + ' emails');
+                
+                if (!listData.messages || listData.messages.length === 0) {
+                    document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:2rem;">No emails found</div>';
+                    return;
+                }
 
-                // Categorize emails
+                // Fetch full emails
+                const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
+                log('✅ Fetched ' + emails.length + ' full emails');
+
+                // Categorize
                 if (CONFIG.GEMINI_API_KEY && !CONFIG.GEMINI_API_KEY.includes('PASTE')) {
+                    log('⏳ Categorizing with Gemini AI...');
                     await categorizeWithGemini(emails);
+                    log('✅ Categorization complete');
                 } else {
-                    // Fallback to keyword matching
+                    log('⚠️ Gemini API key not set, using keyword matching');
                     emails.forEach(email => {
                         const content = (email.subject + ' ' + email.from).toLowerCase();
                         for (const [id, cat] of Object.entries(EMAIL_CATEGORIES)) {
@@ -154,12 +161,12 @@
                 }
 
                 renderEmails(emails);
-                console.log('✅ Emails loaded and categorized');
                 
             } catch (error) {
-                console.error('❌ Error loading emails:', error);
-                document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
+                log('❌ ERROR: ' + error.message, 'error');
+                document.getElementById('errorMessage').textContent = error.message;
                 document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:2rem;color:red;">Error: ' + error.message + '</div>';
             }
         }
 
