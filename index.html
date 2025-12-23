@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gmail Sorter Pro</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,11 +14,8 @@
             <h1>Gmail Sorter Pro</h1>
             <p class="subtitle">AI-Powered Email Organization</p>
             <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
-            <div class="setup-notice">
-                <p>⚠️ Requires Gemini API key for AI categorization</p>
-                <a href="#" onclick="showSetup()">Setup Instructions</a>
-            </div>
             <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
+            <div id="apiStatus" style="background: #f0f0f0; padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;"></div>
         </div>
     </div>
 
@@ -28,75 +24,106 @@
         <header class="app-header">
             <div class="header-top">
                 <h1>Inbox</h1>
-                <button id="signOutBtn" class="icon-btn" title="Sign Out">🚪</button>
+                <button id="signOutBtn" class="icon-btn">🚪</button>
             </div>
             <div class="category-pills" id="categoryPills"></div>
         </header>
         <main class="email-list" id="emailList"></main>
     </div>
 
-    <!-- Email Reader Modal -->
-    <div id="emailModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalSubject">Email</h2>
-                <button class="close-btn" onclick="closeEmail()">×</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <div id="modalSender"></div>
-                <div id="modalDate"></div>
-                <hr style="margin: 15px 0;">
-                <div id="modalContent"></div>
-                <div class="email-actions" style="margin-top: 20px;">
-                    <button class="btn-danger" onclick="deleteCurrentEmail()">🗑️ Delete Email</button>
-                </div>
-            </div>
+    <script>
+        // ⚠️ CONFIGURE THESE VALUES
+        const CONFIG = {
+            GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
+            GEMINI_API_KEY: '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Sorter Pro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <div class="logo">📧</div>
+            <h1>Gmail Sorter Pro</h1>
+            <p class="subtitle">AI-Powered Email Organization</p>
+            <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
+            <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
+            <div id="apiStatus" style="background: #f0f0f0; padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;"></div>
         </div>
     </div>
 
-    <!-- Setup Modal -->
-    <div id="setupModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Setup Instructions</h2>
-                <button class="close-btn" onclick="hideSetup()">×</button>
+    <!-- Main App -->
+    <div id="appScreen" class="screen hidden">
+        <header class="app-header">
+            <div class="header-top">
+                <h1>Inbox</h1>
+                <button id="signOutBtn" class="icon-btn">🚪</button>
             </div>
-            <div class="modal-body">
-                <h3>1. Get Gemini API Key</h3>
-                <p>Go to: <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></p>
-                <p>Create a new API key and copy it.</p>
-                
-                <h3>2. Configure App</h3>
-                <p>Edit <code>index.html</code> and find:</p>
-                <pre>GEMINI_API_KEY: 'PASTE_YOUR_GEMINI_KEY_HERE'</pre>
-                <p>Replace with your actual key.</p>
-                
-                <h3>3. Enable Gmail API</h3>
-                <p>Go to: <a href="https://console.cloud.google.com/apis/library" target="_blank">Google Cloud Console</a></p>
-                <p>Search for "Gmail API" and enable it.</p>
-            </div>
-        </div>
+            <div class="category-pills" id="categoryPills"></div>
+        </header>
+        <main class="email-list" id="emailList"></main>
     </div>
 
     <script>
-        // CONFIGURATION - REPLACE THIS
+        // ⚠️ CONFIGURE THESE VALUES
         const CONFIG = {
             GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
-            GEMINI_API_KEY: 'AIzaSyAybN58q8KVEJ9yrlksgdPS5YX2K2vKNh0'
+            GEMINI_API_KEY: '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Sorter Pro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <div class="logo">📧</div>
+            <h1>Gmail Sorter Pro</h1>
+            <p class="subtitle">AI-Powered Email Organization</p>
+            <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
+            <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
+            <div id="apiStatus" style="background: #f0f0f0; padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appScreen" class="screen hidden">
+        <header class="app-header">
+            <div class="header-top">
+                <h1>Inbox</h1>
+                <button id="signOutBtn" class="icon-btn">🚪</button>
+            </div>
+            <div class="category-pills" id="categoryPills"></div>
+        </header>
+        <main class="email-list" id="emailList"></main>
+    </div>
+
+    <script>
+        // ⚠️ CONFIGURE THESE VALUES
+        const CONFIG = {
+            GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
+            GEMINI_API_KEY: 'PASTE_YOUR_GEMINI_KEY_HERE', // ❌ REPLACE THIS!
             GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly',
-            MAX_EMAILS: 100,
+            MAX_EMAILS: 50,
         };
 
         const EMAIL_CATEGORIES = {
-            casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook'] },
-            otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time','one time'] },
-            social: { name: 'Social', icon: '👥', color: 'social', keywords: ['facebook','twitter','instagram','linkedin','social','friend','follow','comment','post','notification','like','tag'] },
-            shopping: { name: 'Shopping', icon: '🛍️', color: 'shopping', keywords: ['order','amazon','ebay','shipping','delivery','purchase','payment','receipt','tracking','shop','store','refund','return'] },
-            promotions: { name: 'Promo', icon: '📢', color: 'promo', keywords: ['sale','discount','offer','deal','promo','coupon','save','limited time','special offer','clearance','free shipping','buy now'] },
-            finance: { name: 'Finance', icon: '💰', color: 'finance', keywords: ['bank','transaction','statement','balance','payment','invoice','account','credit','debit','investment','stock','crypto','mortgage','loan'] },
-            work: { name: 'Work', icon: '💼', color: 'work', keywords: ['meeting','project','deadline','office','colleague','report','presentation','manager','hr','payroll','client','contract'] },
-            personal: { name: 'Personal', icon: '👤', color: 'personal', keywords: ['family','friend','appointment','schedule','reminder','doctor','dentist','health','personal','birthday','wedding'] },
-            newsletter: { name: 'Newsletter', icon: '📰', color: 'newsletter', keywords: ['newsletter','update','digest','weekly','monthly','subscribe','unsubscribe','blog','article','news','edition'] },
+            casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook','stake','odds','parlay','handicap'] },
+            otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time','one time','sms code','text code'] },
+            social: { name: 'Social', icon: '👥', color: 'social', keywords: ['facebook','twitter','instagram','linkedin','social','friend','follow','comment','post','notification','like','tag','mention','message','dm','direct message'] },
+            shopping: { name: 'Shopping', icon: '🛍️', color: 'shopping', keywords: ['order','amazon','ebay','shipping','delivery','purchase','payment','receipt','tracking','shop','store','refund','return','cart','checkout','confirmation'] },
+            promotions: { name: 'Promo', icon: '📢', color: 'promo', keywords: ['sale','discount','offer','deal','promo','coupon','save','limited time','special offer','clearance','free shipping','buy now','flash sale','last chance'] },
+            finance: { name: 'Finance', icon: '💰', color: 'finance', keywords: ['bank','transaction','statement','balance','payment','invoice','account','credit','debit','investment','stock','crypto','mortgage','loan','overdraft','interest','fee'] },
+            work: { name: 'Work', icon: '💼', color: 'work', keywords: ['meeting','project','deadline','office','colleague','report','presentation','manager','hr','payroll','client','contract','assignment','deadline','schedule'] },
+            personal: { name: 'Personal', icon: '👤', color: 'personal', keywords: ['family','friend','appointment','schedule','reminder','doctor','dentist','health','personal','birthday','wedding','anniversary','party','gathering'] },
+            newsletter: { name: 'Newsletter', icon: '📰', color: 'newsletter', keywords: ['newsletter','update','digest','weekly','monthly','subscribe','unsubscribe','blog','article','news','edition','issue','publication'] },
             general: { name: 'General', icon: '📧', color: 'general', keywords: [] },
         };
 
@@ -104,13 +131,23 @@
         let currentEmails = [];
         let currentEmailId = null;
 
-        // Debug logger
-        function log(message) {
-            console.log(`[Gmail Sorter] ${new Date().toLocaleTimeString()}: ${message}`);
+        // API Status Check
+        function checkAPIStatus() {
+            const status = document.getElementById('apiStatus');
+            if (CONFIG.GEMINI_API_KEY === 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                status.innerHTML = '⚠️ <b>WARNING:</b> Gemini API key not configured!<br><a href="https://makersuite.google.com/app/apikey" target="_blank">Click here to get your FREE key</a>';
+                status.style.background = '#fff3cd';
+                return false;
+            } else {
+                status.innerHTML = '✅ Gemini API key configured';
+                status.style.background = '#d4edda';
+                return true;
+            }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            checkAPIStatus();
             document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
             document.getElementById('signOutBtn').addEventListener('click', signOut);
 
@@ -126,7 +163,6 @@
 
         // OAuth Functions
         function signInWithGoogle() {
-            log('Starting OAuth flow');
             const clientId = CONFIG.GOOGLE_CLIENT_ID;
             const redirectUri = window.location.origin + window.location.pathname;
             const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
@@ -135,13 +171,12 @@
 
         function signOut() {
             localStorage.removeItem('gmail_access_token');
-            window.location.reload();
+            showLogin();
         }
 
         function handleOAuth() {
             const hash = window.location.hash;
             if (hash && hash.includes('access_token')) {
-                log('OAuth callback detected');
                 const params = new URLSearchParams(hash.substring(1));
                 accessToken = params.get('access_token');
                 localStorage.setItem('gmail_access_token', accessToken);
@@ -153,16 +188,19 @@
             return false;
         }
 
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+        }
+
         // Email Loading
         async function loadEmails() {
             try {
-                log('Loading emails...');
                 const token = accessToken || localStorage.getItem('gmail_access_token');
                 if (!token) throw new Error('No access token');
 
                 showLoading();
 
-                // Get email list
                 const listResponse = await fetch(
                     `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
                     { headers: { 'Authorization': `Bearer ${token}` } }
@@ -177,20 +215,22 @@
                     return;
                 }
 
-                // Fetch full emails
                 const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
 
-                // Categorize with AI (if key configured) or keywords
+                // DETERMINE CATEGORIZATION METHOD
+                let useAI = false;
                 if (CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_KEY_HERE') {
-                    log('Using Gemini AI for categorization');
+                    useAI = true;
+                }
+
+                if (useAI) {
                     try {
                         await categorizeWithGemini(emails);
                     } catch (aiError) {
-                        log(`Gemini failed: ${aiError.message}, falling back to keywords`);
+                        console.warn(`AI categorization failed: ${aiError.message}. Using keywords fallback.`);
                         categorizeWithKeywords(emails);
                     }
                 } else {
-                    log('Using keyword matching (no Gemini key)');
                     categorizeWithKeywords(emails);
                 }
 
@@ -214,7 +254,15 @@
                 const msg = await response.json();
                 
                 if (!msg.payload) {
-                    return createPlaceholderEmail(id, 'Unable to load email');
+                    return {
+                        id,
+                        subject: '(No Subject)',
+                        from: 'Unknown',
+                        date: new Date(),
+                        snippet: 'Unable to load email',
+                        body: '',
+                        category: 'uncategorized'
+                    };
                 }
                 
                 const headers = msg.payload.headers;
@@ -229,18 +277,24 @@
                     category: 'uncategorized'
                 };
             } catch (error) {
-                log(`Error fetching email ${id}: ${error.message}`);
-                return createPlaceholderEmail(id, `Error: ${error.message}`);
+                console.error('Error fetching email:', error);
+                return {
+                    id,
+                    subject: 'Error loading email',
+                    from: 'Unknown',
+                    date: new Date(),
+                    snippet: error.message,
+                    body: '',
+                    category: 'uncategorized'
+                };
             }
         }
 
         function extractBody(payload) {
             if (!payload) return '';
-            
             if (payload.body && payload.body.data) {
                 return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
             }
-            
             if (payload.parts) {
                 for (let part of payload.parts) {
                     if (part.mimeType === 'text/plain' && part.body && part.body.data) {
@@ -250,20 +304,7 @@
                     if (subBody) return subBody;
                 }
             }
-            
             return '';
-        }
-
-        function createPlaceholderEmail(id, message) {
-            return {
-                id,
-                subject: message,
-                from: 'Unknown',
-                date: new Date(),
-                snippet: '',
-                body: '',
-                category: 'uncategorized'
-            };
         }
 
         function categorizeWithKeywords(emails) {
@@ -284,7 +325,7 @@
             for (let i = 0; i < emails.length; i++) {
                 const email = emails[i];
                 const categoryNames = Object.keys(EMAIL_CATEGORIES).join(', ');
-                const prompt = `Categorize this email into ONE of these categories: ${categoryNames}. Respond ONLY with the category name.\n\nSubject: "${email.subject}"\nFrom: ${email.from}\nSnippet: ${email.snippet}`;
+                const prompt = `Categorize this email into ONE category: ${categoryNames}. Respond ONLY with the category name.\n\nSubject: "${email.subject}"\nFrom: ${email.from}\nSnippet: ${email.snippet}`;
                 
                 try {
                     const response = await fetch(
@@ -296,32 +337,31 @@
                         }
                     );
                     
+                    // 🔥 CRITICAL FIX: Check response status BEFORE parsing
                     if (!response.ok) {
-                        const errorData = await response.text();
-                        log(`Gemini API error (email ${i}): ${response.status} - ${errorData}`);
-                        continue;
+                        const errorText = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errorText}`);
                     }
                     
                     const data = await response.json();
                     
-                    // SAFE PARSE: Check response structure
-                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0]) {
-                        log(`Invalid Gemini response for email ${i}: ${JSON.stringify(data).substring(0, 100)}...`);
-                        continue;
-                    }
-                    
-                    const category = data.candidates[0].content.parts[0].text.trim().toLowerCase();
-                    if (EMAIL_CATEGORIES[category]) {
-                        email.category = category;
-                        log(`✅ Email ${i} categorized as: ${category}`);
+                    // 🔥 CRITICAL FIX: Validate response structure before accessing
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content && 
+                        data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                        const category = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                        if (EMAIL_CATEGORIES[category]) {
+                            email.category = category;
+                        }
+                    } else {
+                        console.warn(`Invalid Gemini response for email ${i}:`, data);
                     }
                 } catch (error) {
-                    log(`Gemini categorization failed for email ${i}: ${error.message}`);
+                    console.warn(`Gemini categorization failed for email ${i}: ${error.message}`);
+                    // Continue to next email
                 }
             }
         }
 
-        // UI Rendering
         function renderEmails(emails) {
             const pills = document.getElementById('categoryPills');
             const list = document.getElementById('emailList');
@@ -358,78 +398,1195 @@
         }
 
         function filterByCategory(category) {
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            document.querySelector(`[onclick="filterByCategory('${category}')"]`).classList.add('active');
-            
             const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => e.category === category);
             renderEmails(filtered);
         }
 
-        // Email Modal
         function openEmail(emailId) {
             const email = currentEmails.find(e => e.id === emailId);
             if (!email) return;
             
-            currentEmailId = emailId;
+            // Create modal
+            const html = `
+                <div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;padding:20px;overflow-y:auto;">
+                    <div style="background:white;padding:20px;border-radius:8px;max-width:600px;margin:0 auto;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                            <h2 style="margin:0;">${email.subject}</h2>
+                            <button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;">×</button>
+                        </div>
+                        <div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div>
+                        <div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div>
+                        <hr style="margin:20px 0;">
+                        <div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div>
+                        <div style="display:flex;gap:10px;">
+                            <button onclick="deleteEmail('${email.id}')" style="background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete</button>
+                            <button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:#4285f4;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button>
+                            <button onclick="this.closest('.email-modal').remove()" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
             
-            document.getElementById('modalSubject').textContent = email.subject;
-            document.getElementById('modalSender').textContent = `From: ${email.from}`;
-            document.getElementById('modalDate').textContent = `Date: ${new Date(email.date).toLocaleString()}`;
-            document.getElementById('modalContent').innerHTML = email.body || '<p><em>No content</em></p>';
-            
-            document.getElementById('emailModal').classList.remove('hidden');
+            const modal = document.createElement('div');
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
         }
 
-        function closeEmail() {
-            document.getElementById('emailModal').classList.add('hidden');
-            currentEmailId = null;
-        }
-
-        async function deleteCurrentEmail() {
-            if (!currentEmailId || !confirm('Delete this email?')) return;
+        async function deleteEmail(emailId) {
+            if (!confirm('🗑️ Delete this email?')) return;
             
             try {
                 const token = accessToken || localStorage.getItem('gmail_access_token');
                 const response = await fetch(
-                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${currentEmailId}/trash`,
-                    { 
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` } 
-                    }
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`,
+                    { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
                 );
                 
                 if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
                 
-                // Remove from local list
-                currentEmails = currentEmails.filter(e => e.id !== currentEmailId);
+                // Remove from UI
+                currentEmails = currentEmails.filter(e => e.id !== emailId);
                 renderEmails(currentEmails);
+                document.querySelector('.email-modal')?.remove();
                 
-                closeEmail();
             } catch (error) {
-                alert('Error deleting email: ' + error.message);
+                alert('❌ Error deleting email: ' + error.message);
             }
         }
 
-        // Modal helpers
-        function showSetup() {
-            document.getElementById('setupModal').classList.remove('hidden');
-        }
-        function hideSetup() {
-            document.getElementById('setupModal').classList.add('hidden');
-        }
-
+        // UI Helpers
         function showLoading() {
-            document.getElementById('emailList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading emails...</p></div>';
+            document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
         }
 
         function showEmptyState(message) {
-            document.getElementById('emailList').innerHTML = `<div class="empty-state"><div class="icon">📭</div><h2>${message}</h2></div>`;
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📭</div><h2>${message}</h2></div>`;
         }
 
         function showError(message) {
             document.getElementById('errorMessage').textContent = message;
             document.getElementById('errorMessage').style.display = 'block';
-            document.getElementById('emailList').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;color:red;"><div style="font-size:3rem;margin-bottom:1rem;">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
+        }
+    </script>
+</body>
+</html>', // ❌ REPLACE THIS!
+            GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly',
+            MAX_EMAILS: 50,
+        };
+
+        const EMAIL_CATEGORIES = {
+            casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook','stake','odds','parlay','handicap'] },
+            otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time','one time','sms code','text code'] },
+            social: { name: 'Social', icon: '👥', color: 'social', keywords: ['facebook','twitter','instagram','linkedin','social','friend','follow','comment','post','notification','like','tag','mention','message','dm','direct message'] },
+            shopping: { name: 'Shopping', icon: '🛍️', color: 'shopping', keywords: ['order','amazon','ebay','shipping','delivery','purchase','payment','receipt','tracking','shop','store','refund','return','cart','checkout','confirmation'] },
+            promotions: { name: 'Promo', icon: '📢', color: 'promo', keywords: ['sale','discount','offer','deal','promo','coupon','save','limited time','special offer','clearance','free shipping','buy now','flash sale','last chance'] },
+            finance: { name: 'Finance', icon: '💰', color: 'finance', keywords: ['bank','transaction','statement','balance','payment','invoice','account','credit','debit','investment','stock','crypto','mortgage','loan','overdraft','interest','fee'] },
+            work: { name: 'Work', icon: '💼', color: 'work', keywords: ['meeting','project','deadline','office','colleague','report','presentation','manager','hr','payroll','client','contract','assignment','deadline','schedule'] },
+            personal: { name: 'Personal', icon: '👤', color: 'personal', keywords: ['family','friend','appointment','schedule','reminder','doctor','dentist','health','personal','birthday','wedding','anniversary','party','gathering'] },
+            newsletter: { name: 'Newsletter', icon: '📰', color: 'newsletter', keywords: ['newsletter','update','digest','weekly','monthly','subscribe','unsubscribe','blog','article','news','edition','issue','publication'] },
+            general: { name: 'General', icon: '📧', color: 'general', keywords: [] },
+        };
+
+        let accessToken = null;
+        let currentEmails = [];
+        let currentEmailId = null;
+
+        // API Status Check
+        function checkAPIStatus() {
+            const status = document.getElementById('apiStatus');
+            if (CONFIG.GEMINI_API_KEY === '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Sorter Pro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <div class="logo">📧</div>
+            <h1>Gmail Sorter Pro</h1>
+            <p class="subtitle">AI-Powered Email Organization</p>
+            <button id="signInButton" class="google-signin-btn">Sign in with Google</button>
+            <div id="errorMessage" style="color: red; margin-top: 20px; display: none;"></div>
+            <div id="apiStatus" style="background: #f0f0f0; padding: 10px; margin-top: 15px; border-radius: 4px; font-size: 14px;"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appScreen" class="screen hidden">
+        <header class="app-header">
+            <div class="header-top">
+                <h1>Inbox</h1>
+                <button id="signOutBtn" class="icon-btn">🚪</button>
+            </div>
+            <div class="category-pills" id="categoryPills"></div>
+        </header>
+        <main class="email-list" id="emailList"></main>
+    </div>
+
+    <script>
+        // ⚠️ CONFIGURE THESE VALUES
+        const CONFIG = {
+            GOOGLE_CLIENT_ID: '469028529540-399r7m34gkt3n05r7ss572jmkpbl5np8.apps.googleusercontent.com',
+            GEMINI_API_KEY: 'PASTE_YOUR_GEMINI_KEY_HERE', // ❌ REPLACE THIS!
+            GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly',
+            MAX_EMAILS: 50,
+        };
+
+        const EMAIL_CATEGORIES = {
+            casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook','stake','odds','parlay','handicap'] },
+            otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time','one time','sms code','text code'] },
+            social: { name: 'Social', icon: '👥', color: 'social', keywords: ['facebook','twitter','instagram','linkedin','social','friend','follow','comment','post','notification','like','tag','mention','message','dm','direct message'] },
+            shopping: { name: 'Shopping', icon: '🛍️', color: 'shopping', keywords: ['order','amazon','ebay','shipping','delivery','purchase','payment','receipt','tracking','shop','store','refund','return','cart','checkout','confirmation'] },
+            promotions: { name: 'Promo', icon: '📢', color: 'promo', keywords: ['sale','discount','offer','deal','promo','coupon','save','limited time','special offer','clearance','free shipping','buy now','flash sale','last chance'] },
+            finance: { name: 'Finance', icon: '💰', color: 'finance', keywords: ['bank','transaction','statement','balance','payment','invoice','account','credit','debit','investment','stock','crypto','mortgage','loan','overdraft','interest','fee'] },
+            work: { name: 'Work', icon: '💼', color: 'work', keywords: ['meeting','project','deadline','office','colleague','report','presentation','manager','hr','payroll','client','contract','assignment','deadline','schedule'] },
+            personal: { name: 'Personal', icon: '👤', color: 'personal', keywords: ['family','friend','appointment','schedule','reminder','doctor','dentist','health','personal','birthday','wedding','anniversary','party','gathering'] },
+            newsletter: { name: 'Newsletter', icon: '📰', color: 'newsletter', keywords: ['newsletter','update','digest','weekly','monthly','subscribe','unsubscribe','blog','article','news','edition','issue','publication'] },
+            general: { name: 'General', icon: '📧', color: 'general', keywords: [] },
+        };
+
+        let accessToken = null;
+        let currentEmails = [];
+        let currentEmailId = null;
+
+        // API Status Check
+        function checkAPIStatus() {
+            const status = document.getElementById('apiStatus');
+            if (CONFIG.GEMINI_API_KEY === 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                status.innerHTML = '⚠️ <b>WARNING:</b> Gemini API key not configured!<br><a href="https://makersuite.google.com/app/apikey" target="_blank">Click here to get your FREE key</a>';
+                status.style.background = '#fff3cd';
+                return false;
+            } else {
+                status.innerHTML = '✅ Gemini API key configured';
+                status.style.background = '#d4edda';
+                return true;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAPIStatus();
+            document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+            if (handleOAuth()) {
+                loadEmails();
+            } else if (localStorage.getItem('gmail_access_token')) {
+                accessToken = localStorage.getItem('gmail_access_token');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                loadEmails();
+            }
+        });
+
+        // OAuth Functions
+        function signInWithGoogle() {
+            const clientId = CONFIG.GOOGLE_CLIENT_ID;
+            const redirectUri = window.location.origin + window.location.pathname;
+            const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&prompt=consent`;
+        }
+
+        function signOut() {
+            localStorage.removeItem('gmail_access_token');
+            showLogin();
+        }
+
+        function handleOAuth() {
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                accessToken = params.get('access_token');
+                localStorage.setItem('gmail_access_token', accessToken);
+                window.history.replaceState(null, null, window.location.pathname);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                return true;
+            }
+            return false;
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+        }
+
+        // Email Loading
+        async function loadEmails() {
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                if (!token) throw new Error('No access token');
+
+                showLoading();
+
+                const listResponse = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!listResponse.ok) throw new Error(`Gmail API error: ${listResponse.status}`);
+                
+                const listData = await listResponse.json();
+                
+                if (!listData.messages || listData.messages.length === 0) {
+                    showEmptyState('No emails in inbox');
+                    return;
+                }
+
+                const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
+
+                // DETERMINE CATEGORIZATION METHOD
+                let useAI = false;
+                if (CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                    useAI = true;
+                }
+
+                if (useAI) {
+                    try {
+                        await categorizeWithGemini(emails);
+                    } catch (aiError) {
+                        console.warn(`AI categorization failed: ${aiError.message}. Using keywords fallback.`);
+                        categorizeWithKeywords(emails);
+                    }
+                } else {
+                    categorizeWithKeywords(emails);
+                }
+
+                currentEmails = emails;
+                renderEmails(emails);
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function fetchEmail(id, token) {
+            try {
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=full`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Failed to fetch email ${id}: ${response.status}`);
+                
+                const msg = await response.json();
+                
+                if (!msg.payload) {
+                    return {
+                        id,
+                        subject: '(No Subject)',
+                        from: 'Unknown',
+                        date: new Date(),
+                        snippet: 'Unable to load email',
+                        body: '',
+                        category: 'uncategorized'
+                    };
+                }
+                
+                const headers = msg.payload.headers;
+                
+                return {
+                    id,
+                    subject: headers.find(h => h.name === 'Subject')?.value || '(No Subject)',
+                    from: headers.find(h => h.name === 'From')?.value || 'Unknown',
+                    date: new Date(headers.find(h => h.name === 'Date')?.value || Date.now()),
+                    snippet: msg.snippet || '',
+                    body: extractBody(msg.payload),
+                    category: 'uncategorized'
+                };
+            } catch (error) {
+                console.error('Error fetching email:', error);
+                return {
+                    id,
+                    subject: 'Error loading email',
+                    from: 'Unknown',
+                    date: new Date(),
+                    snippet: error.message,
+                    body: '',
+                    category: 'uncategorized'
+                };
+            }
+        }
+
+        function extractBody(payload) {
+            if (!payload) return '';
+            if (payload.body && payload.body.data) {
+                return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            }
+            if (payload.parts) {
+                for (let part of payload.parts) {
+                    if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+                        return atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
+                    const subBody = extractBody(part);
+                    if (subBody) return subBody;
+                }
+            }
+            return '';
+        }
+
+        function categorizeWithKeywords(emails) {
+            emails.forEach(email => {
+                const content = (email.subject + ' ' + email.from + ' ' + email.snippet).toLowerCase();
+                for (const [id, cat] of Object.entries(EMAIL_CATEGORIES)) {
+                    if (cat.keywords.some(k => content.includes(k))) {
+                        email.category = id;
+                        break;
+                    }
+                }
+            });
+        }
+
+        async function categorizeWithGemini(emails) {
+            const apiKey = CONFIG.GEMINI_API_KEY;
+            
+            for (let i = 0; i < emails.length; i++) {
+                const email = emails[i];
+                const categoryNames = Object.keys(EMAIL_CATEGORIES).join(', ');
+                const prompt = `Categorize this email into ONE category: ${categoryNames}. Respond ONLY with the category name.\n\nSubject: "${email.subject}"\nFrom: ${email.from}\nSnippet: ${email.snippet}`;
+                
+                try {
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                        }
+                    );
+                    
+                    // 🔥 CRITICAL FIX: Check response status BEFORE parsing
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // 🔥 CRITICAL FIX: Validate response structure before accessing
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content && 
+                        data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                        const category = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                        if (EMAIL_CATEGORIES[category]) {
+                            email.category = category;
+                        }
+                    } else {
+                        console.warn(`Invalid Gemini response for email ${i}:`, data);
+                    }
+                } catch (error) {
+                    console.warn(`Gemini categorization failed for email ${i}: ${error.message}`);
+                    // Continue to next email
+                }
+            }
+        }
+
+        function renderEmails(emails) {
+            const pills = document.getElementById('categoryPills');
+            const list = document.getElementById('emailList');
+            
+            const counts = {};
+            Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
+            emails.forEach(e => counts[e.category]++);
+            
+            let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
+            for (const [id, count] of Object.entries(counts)) {
+                if (count > 0) {
+                    const cat = EMAIL_CATEGORIES[id];
+                    pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
+                }
+            }
+            pills.innerHTML = pillsHTML;
+            
+            list.innerHTML = emails.map(e => {
+                const cat = EMAIL_CATEGORIES[e.category];
+                const sender = e.from.split('<')[0].trim();
+                const date = new Date(e.date).toLocaleDateString();
+                return `
+                    <div class="email-item" onclick="openEmail('${e.id}')">
+                        <div class="email-header">
+                            <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
+                            <span class="email-date">${date}</span>
+                        </div>
+                        <div class="email-sender">${sender}</div>
+                        <div class="email-subject">${e.subject}</div>
+                        <div class="email-snippet">${e.snippet.substring(0, 150)}...</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterByCategory(category) {
+            const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => e.category === category);
+            renderEmails(filtered);
+        }
+
+        function openEmail(emailId) {
+            const email = currentEmails.find(e => e.id === emailId);
+            if (!email) return;
+            
+            // Create modal
+            const html = `
+                <div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;padding:20px;overflow-y:auto;">
+                    <div style="background:white;padding:20px;border-radius:8px;max-width:600px;margin:0 auto;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                            <h2 style="margin:0;">${email.subject}</h2>
+                            <button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;">×</button>
+                        </div>
+                        <div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div>
+                        <div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div>
+                        <hr style="margin:20px 0;">
+                        <div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div>
+                        <div style="display:flex;gap:10px;">
+                            <button onclick="deleteEmail('${email.id}')" style="background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete</button>
+                            <button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:#4285f4;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button>
+                            <button onclick="this.closest('.email-modal').remove()" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+        }
+
+        async function deleteEmail(emailId) {
+            if (!confirm('🗑️ Delete this email?')) return;
+            
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`,
+                    { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+                
+                // Remove from UI
+                currentEmails = currentEmails.filter(e => e.id !== emailId);
+                renderEmails(currentEmails);
+                document.querySelector('.email-modal')?.remove();
+                
+            } catch (error) {
+                alert('❌ Error deleting email: ' + error.message);
+            }
+        }
+
+        // UI Helpers
+        function showLoading() {
+            document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
+        }
+
+        function showEmptyState(message) {
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📭</div><h2>${message}</h2></div>`;
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;color:red;"><div style="font-size:3rem;margin-bottom:1rem;">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
+        }
+    </script>
+</body>
+</html>') {
+                status.innerHTML = '⚠️ <b>WARNING:</b> Gemini API key not configured!<br><a href="https://makersuite.google.com/app/apikey" target="_blank">Click here to get your FREE key</a>';
+                status.style.background = '#fff3cd';
+                return false;
+            } else {
+                status.innerHTML = '✅ Gemini API key configured';
+                status.style.background = '#d4edda';
+                return true;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAPIStatus();
+            document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+            if (handleOAuth()) {
+                loadEmails();
+            } else if (localStorage.getItem('gmail_access_token')) {
+                accessToken = localStorage.getItem('gmail_access_token');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                loadEmails();
+            }
+        });
+
+        // OAuth Functions
+        function signInWithGoogle() {
+            const clientId = CONFIG.GOOGLE_CLIENT_ID;
+            const redirectUri = window.location.origin + window.location.pathname;
+            const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&prompt=consent`;
+        }
+
+        function signOut() {
+            localStorage.removeItem('gmail_access_token');
+            showLogin();
+        }
+
+        function handleOAuth() {
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                accessToken = params.get('access_token');
+                localStorage.setItem('gmail_access_token', accessToken);
+                window.history.replaceState(null, null, window.location.pathname);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                return true;
+            }
+            return false;
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+        }
+
+        // Email Loading
+        async function loadEmails() {
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                if (!token) throw new Error('No access token');
+
+                showLoading();
+
+                const listResponse = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!listResponse.ok) throw new Error(`Gmail API error: ${listResponse.status}`);
+                
+                const listData = await listResponse.json();
+                
+                if (!listData.messages || listData.messages.length === 0) {
+                    showEmptyState('No emails in inbox');
+                    return;
+                }
+
+                const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
+
+                // DETERMINE CATEGORIZATION METHOD
+                let useAI = false;
+                if (CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                    useAI = true;
+                }
+
+                if (useAI) {
+                    try {
+                        await categorizeWithGemini(emails);
+                    } catch (aiError) {
+                        console.warn(`AI categorization failed: ${aiError.message}. Using keywords fallback.`);
+                        categorizeWithKeywords(emails);
+                    }
+                } else {
+                    categorizeWithKeywords(emails);
+                }
+
+                currentEmails = emails;
+                renderEmails(emails);
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function fetchEmail(id, token) {
+            try {
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=full`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Failed to fetch email ${id}: ${response.status}`);
+                
+                const msg = await response.json();
+                
+                if (!msg.payload) {
+                    return {
+                        id,
+                        subject: '(No Subject)',
+                        from: 'Unknown',
+                        date: new Date(),
+                        snippet: 'Unable to load email',
+                        body: '',
+                        category: 'uncategorized'
+                    };
+                }
+                
+                const headers = msg.payload.headers;
+                
+                return {
+                    id,
+                    subject: headers.find(h => h.name === 'Subject')?.value || '(No Subject)',
+                    from: headers.find(h => h.name === 'From')?.value || 'Unknown',
+                    date: new Date(headers.find(h => h.name === 'Date')?.value || Date.now()),
+                    snippet: msg.snippet || '',
+                    body: extractBody(msg.payload),
+                    category: 'uncategorized'
+                };
+            } catch (error) {
+                console.error('Error fetching email:', error);
+                return {
+                    id,
+                    subject: 'Error loading email',
+                    from: 'Unknown',
+                    date: new Date(),
+                    snippet: error.message,
+                    body: '',
+                    category: 'uncategorized'
+                };
+            }
+        }
+
+        function extractBody(payload) {
+            if (!payload) return '';
+            if (payload.body && payload.body.data) {
+                return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            }
+            if (payload.parts) {
+                for (let part of payload.parts) {
+                    if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+                        return atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
+                    const subBody = extractBody(part);
+                    if (subBody) return subBody;
+                }
+            }
+            return '';
+        }
+
+        function categorizeWithKeywords(emails) {
+            emails.forEach(email => {
+                const content = (email.subject + ' ' + email.from + ' ' + email.snippet).toLowerCase();
+                for (const [id, cat] of Object.entries(EMAIL_CATEGORIES)) {
+                    if (cat.keywords.some(k => content.includes(k))) {
+                        email.category = id;
+                        break;
+                    }
+                }
+            });
+        }
+
+        async function categorizeWithGemini(emails) {
+            const apiKey = CONFIG.GEMINI_API_KEY;
+            
+            for (let i = 0; i < emails.length; i++) {
+                const email = emails[i];
+                const categoryNames = Object.keys(EMAIL_CATEGORIES).join(', ');
+                const prompt = `Categorize this email into ONE category: ${categoryNames}. Respond ONLY with the category name.\n\nSubject: "${email.subject}"\nFrom: ${email.from}\nSnippet: ${email.snippet}`;
+                
+                try {
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                        }
+                    );
+                    
+                    // 🔥 CRITICAL FIX: Check response status BEFORE parsing
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // 🔥 CRITICAL FIX: Validate response structure before accessing
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content && 
+                        data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                        const category = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                        if (EMAIL_CATEGORIES[category]) {
+                            email.category = category;
+                        }
+                    } else {
+                        console.warn(`Invalid Gemini response for email ${i}:`, data);
+                    }
+                } catch (error) {
+                    console.warn(`Gemini categorization failed for email ${i}: ${error.message}`);
+                    // Continue to next email
+                }
+            }
+        }
+
+        function renderEmails(emails) {
+            const pills = document.getElementById('categoryPills');
+            const list = document.getElementById('emailList');
+            
+            const counts = {};
+            Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
+            emails.forEach(e => counts[e.category]++);
+            
+            let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
+            for (const [id, count] of Object.entries(counts)) {
+                if (count > 0) {
+                    const cat = EMAIL_CATEGORIES[id];
+                    pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
+                }
+            }
+            pills.innerHTML = pillsHTML;
+            
+            list.innerHTML = emails.map(e => {
+                const cat = EMAIL_CATEGORIES[e.category];
+                const sender = e.from.split('<')[0].trim();
+                const date = new Date(e.date).toLocaleDateString();
+                return `
+                    <div class="email-item" onclick="openEmail('${e.id}')">
+                        <div class="email-header">
+                            <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
+                            <span class="email-date">${date}</span>
+                        </div>
+                        <div class="email-sender">${sender}</div>
+                        <div class="email-subject">${e.subject}</div>
+                        <div class="email-snippet">${e.snippet.substring(0, 150)}...</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterByCategory(category) {
+            const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => e.category === category);
+            renderEmails(filtered);
+        }
+
+        function openEmail(emailId) {
+            const email = currentEmails.find(e => e.id === emailId);
+            if (!email) return;
+            
+            // Create modal
+            const html = `
+                <div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;padding:20px;overflow-y:auto;">
+                    <div style="background:white;padding:20px;border-radius:8px;max-width:600px;margin:0 auto;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                            <h2 style="margin:0;">${email.subject}</h2>
+                            <button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;">×</button>
+                        </div>
+                        <div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div>
+                        <div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div>
+                        <hr style="margin:20px 0;">
+                        <div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div>
+                        <div style="display:flex;gap:10px;">
+                            <button onclick="deleteEmail('${email.id}')" style="background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete</button>
+                            <button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:#4285f4;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button>
+                            <button onclick="this.closest('.email-modal').remove()" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+        }
+
+        async function deleteEmail(emailId) {
+            if (!confirm('🗑️ Delete this email?')) return;
+            
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`,
+                    { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+                
+                // Remove from UI
+                currentEmails = currentEmails.filter(e => e.id !== emailId);
+                renderEmails(currentEmails);
+                document.querySelector('.email-modal')?.remove();
+                
+            } catch (error) {
+                alert('❌ Error deleting email: ' + error.message);
+            }
+        }
+
+        // UI Helpers
+        function showLoading() {
+            document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
+        }
+
+        function showEmptyState(message) {
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📭</div><h2>${message}</h2></div>`;
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;color:red;"><div style="font-size:3rem;margin-bottom:1rem;">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
+        }
+    </script>
+</body>
+</html>', // ❌ REPLACE THIS!
+            GMAIL_SCOPES: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly',
+            MAX_EMAILS: 50,
+        };
+
+        const EMAIL_CATEGORIES = {
+            casino: { name: 'Casino', icon: '🎰', color: 'casino', keywords: ['casino','bet','poker','slots','blackjack','roulette','gambling','wager','bonus','deposit','withdrawal','jackpot','betting','sportsbook','stake','odds','parlay','handicap'] },
+            otp: { name: 'OTP/2FA', icon: '🔐', color: 'otp', keywords: ['code','verification','otp','2fa','verify','login code','security code','authentication','one-time','one time','sms code','text code'] },
+            social: { name: 'Social', icon: '👥', color: 'social', keywords: ['facebook','twitter','instagram','linkedin','social','friend','follow','comment','post','notification','like','tag','mention','message','dm','direct message'] },
+            shopping: { name: 'Shopping', icon: '🛍️', color: 'shopping', keywords: ['order','amazon','ebay','shipping','delivery','purchase','payment','receipt','tracking','shop','store','refund','return','cart','checkout','confirmation'] },
+            promotions: { name: 'Promo', icon: '📢', color: 'promo', keywords: ['sale','discount','offer','deal','promo','coupon','save','limited time','special offer','clearance','free shipping','buy now','flash sale','last chance'] },
+            finance: { name: 'Finance', icon: '💰', color: 'finance', keywords: ['bank','transaction','statement','balance','payment','invoice','account','credit','debit','investment','stock','crypto','mortgage','loan','overdraft','interest','fee'] },
+            work: { name: 'Work', icon: '💼', color: 'work', keywords: ['meeting','project','deadline','office','colleague','report','presentation','manager','hr','payroll','client','contract','assignment','deadline','schedule'] },
+            personal: { name: 'Personal', icon: '👤', color: 'personal', keywords: ['family','friend','appointment','schedule','reminder','doctor','dentist','health','personal','birthday','wedding','anniversary','party','gathering'] },
+            newsletter: { name: 'Newsletter', icon: '📰', color: 'newsletter', keywords: ['newsletter','update','digest','weekly','monthly','subscribe','unsubscribe','blog','article','news','edition','issue','publication'] },
+            general: { name: 'General', icon: '📧', color: 'general', keywords: [] },
+        };
+
+        let accessToken = null;
+        let currentEmails = [];
+        let currentEmailId = null;
+
+        // API Status Check
+        function checkAPIStatus() {
+            const status = document.getElementById('apiStatus');
+            if (CONFIG.GEMINI_API_KEY === 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                status.innerHTML = '⚠️ <b>WARNING:</b> Gemini API key not configured!<br><a href="https://makersuite.google.com/app/apikey" target="_blank">Click here to get your FREE key</a>';
+                status.style.background = '#fff3cd';
+                return false;
+            } else {
+                status.innerHTML = '✅ Gemini API key configured';
+                status.style.background = '#d4edda';
+                return true;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAPIStatus();
+            document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+            if (handleOAuth()) {
+                loadEmails();
+            } else if (localStorage.getItem('gmail_access_token')) {
+                accessToken = localStorage.getItem('gmail_access_token');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                loadEmails();
+            }
+        });
+
+        // OAuth Functions
+        function signInWithGoogle() {
+            const clientId = CONFIG.GOOGLE_CLIENT_ID;
+            const redirectUri = window.location.origin + window.location.pathname;
+            const scope = encodeURIComponent(CONFIG.GMAIL_SCOPES);
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&prompt=consent`;
+        }
+
+        function signOut() {
+            localStorage.removeItem('gmail_access_token');
+            showLogin();
+        }
+
+        function handleOAuth() {
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                accessToken = params.get('access_token');
+                localStorage.setItem('gmail_access_token', accessToken);
+                window.history.replaceState(null, null, window.location.pathname);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                return true;
+            }
+            return false;
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+        }
+
+        // Email Loading
+        async function loadEmails() {
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                if (!token) throw new Error('No access token');
+
+                showLoading();
+
+                const listResponse = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${CONFIG.MAX_EMAILS}&q=in:inbox`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!listResponse.ok) throw new Error(`Gmail API error: ${listResponse.status}`);
+                
+                const listData = await listResponse.json();
+                
+                if (!listData.messages || listData.messages.length === 0) {
+                    showEmptyState('No emails in inbox');
+                    return;
+                }
+
+                const emails = await Promise.all(listData.messages.map(msg => fetchEmail(msg.id, token)));
+
+                // DETERMINE CATEGORIZATION METHOD
+                let useAI = false;
+                if (CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_KEY_HERE') {
+                    useAI = true;
+                }
+
+                if (useAI) {
+                    try {
+                        await categorizeWithGemini(emails);
+                    } catch (aiError) {
+                        console.warn(`AI categorization failed: ${aiError.message}. Using keywords fallback.`);
+                        categorizeWithKeywords(emails);
+                    }
+                } else {
+                    categorizeWithKeywords(emails);
+                }
+
+                currentEmails = emails;
+                renderEmails(emails);
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function fetchEmail(id, token) {
+            try {
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=full`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Failed to fetch email ${id}: ${response.status}`);
+                
+                const msg = await response.json();
+                
+                if (!msg.payload) {
+                    return {
+                        id,
+                        subject: '(No Subject)',
+                        from: 'Unknown',
+                        date: new Date(),
+                        snippet: 'Unable to load email',
+                        body: '',
+                        category: 'uncategorized'
+                    };
+                }
+                
+                const headers = msg.payload.headers;
+                
+                return {
+                    id,
+                    subject: headers.find(h => h.name === 'Subject')?.value || '(No Subject)',
+                    from: headers.find(h => h.name === 'From')?.value || 'Unknown',
+                    date: new Date(headers.find(h => h.name === 'Date')?.value || Date.now()),
+                    snippet: msg.snippet || '',
+                    body: extractBody(msg.payload),
+                    category: 'uncategorized'
+                };
+            } catch (error) {
+                console.error('Error fetching email:', error);
+                return {
+                    id,
+                    subject: 'Error loading email',
+                    from: 'Unknown',
+                    date: new Date(),
+                    snippet: error.message,
+                    body: '',
+                    category: 'uncategorized'
+                };
+            }
+        }
+
+        function extractBody(payload) {
+            if (!payload) return '';
+            if (payload.body && payload.body.data) {
+                return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            }
+            if (payload.parts) {
+                for (let part of payload.parts) {
+                    if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+                        return atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
+                    const subBody = extractBody(part);
+                    if (subBody) return subBody;
+                }
+            }
+            return '';
+        }
+
+        function categorizeWithKeywords(emails) {
+            emails.forEach(email => {
+                const content = (email.subject + ' ' + email.from + ' ' + email.snippet).toLowerCase();
+                for (const [id, cat] of Object.entries(EMAIL_CATEGORIES)) {
+                    if (cat.keywords.some(k => content.includes(k))) {
+                        email.category = id;
+                        break;
+                    }
+                }
+            });
+        }
+
+        async function categorizeWithGemini(emails) {
+            const apiKey = CONFIG.GEMINI_API_KEY;
+            
+            for (let i = 0; i < emails.length; i++) {
+                const email = emails[i];
+                const categoryNames = Object.keys(EMAIL_CATEGORIES).join(', ');
+                const prompt = `Categorize this email into ONE category: ${categoryNames}. Respond ONLY with the category name.\n\nSubject: "${email.subject}"\nFrom: ${email.from}\nSnippet: ${email.snippet}`;
+                
+                try {
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                        }
+                    );
+                    
+                    // 🔥 CRITICAL FIX: Check response status BEFORE parsing
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // 🔥 CRITICAL FIX: Validate response structure before accessing
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content && 
+                        data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                        const category = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                        if (EMAIL_CATEGORIES[category]) {
+                            email.category = category;
+                        }
+                    } else {
+                        console.warn(`Invalid Gemini response for email ${i}:`, data);
+                    }
+                } catch (error) {
+                    console.warn(`Gemini categorization failed for email ${i}: ${error.message}`);
+                    // Continue to next email
+                }
+            }
+        }
+
+        function renderEmails(emails) {
+            const pills = document.getElementById('categoryPills');
+            const list = document.getElementById('emailList');
+            
+            const counts = {};
+            Object.keys(EMAIL_CATEGORIES).forEach(id => counts[id] = 0);
+            emails.forEach(e => counts[e.category]++);
+            
+            let pillsHTML = `<button class="pill active" onclick="filterByCategory('all')">All ${emails.length}</button>`;
+            for (const [id, count] of Object.entries(counts)) {
+                if (count > 0) {
+                    const cat = EMAIL_CATEGORIES[id];
+                    pillsHTML += `<button class="pill" onclick="filterByCategory('${id}')">${cat.icon} ${cat.name} ${count}</button>`;
+                }
+            }
+            pills.innerHTML = pillsHTML;
+            
+            list.innerHTML = emails.map(e => {
+                const cat = EMAIL_CATEGORIES[e.category];
+                const sender = e.from.split('<')[0].trim();
+                const date = new Date(e.date).toLocaleDateString();
+                return `
+                    <div class="email-item" onclick="openEmail('${e.id}')">
+                        <div class="email-header">
+                            <span class="category-badge badge-${cat.color}">${cat.icon} ${cat.name}</span>
+                            <span class="email-date">${date}</span>
+                        </div>
+                        <div class="email-sender">${sender}</div>
+                        <div class="email-subject">${e.subject}</div>
+                        <div class="email-snippet">${e.snippet.substring(0, 150)}...</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterByCategory(category) {
+            const filtered = category === 'all' ? currentEmails : currentEmails.filter(e => e.category === category);
+            renderEmails(filtered);
+        }
+
+        function openEmail(emailId) {
+            const email = currentEmails.find(e => e.id === emailId);
+            if (!email) return;
+            
+            // Create modal
+            const html = `
+                <div class="email-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;padding:20px;overflow-y:auto;">
+                    <div style="background:white;padding:20px;border-radius:8px;max-width:600px;margin:0 auto;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                            <h2 style="margin:0;">${email.subject}</h2>
+                            <button onclick="this.closest('.email-modal').remove()" style="font-size:24px;background:none;border:none;cursor:pointer;">×</button>
+                        </div>
+                        <div style="margin-bottom:15px;"><strong>From:</strong> ${email.from}</div>
+                        <div style="margin-bottom:15px;"><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</div>
+                        <hr style="margin:20px 0;">
+                        <div style="white-space:pre-wrap;margin-bottom:20px;">${email.body || '<em>No content available</em>'}</div>
+                        <div style="display:flex;gap:10px;">
+                            <button onclick="deleteEmail('${email.id}')" style="background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">🗑️ Delete</button>
+                            <button onclick="window.open('https://mail.google.com/mail/u/0/#inbox/${email.id}', '_blank')" style="background:#4285f4;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Open in Gmail</button>
+                            <button onclick="this.closest('.email-modal').remove()" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+        }
+
+        async function deleteEmail(emailId) {
+            if (!confirm('🗑️ Delete this email?')) return;
+            
+            try {
+                const token = accessToken || localStorage.getItem('gmail_access_token');
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailId}/trash`,
+                    { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
+                );
+                
+                if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+                
+                // Remove from UI
+                currentEmails = currentEmails.filter(e => e.id !== emailId);
+                renderEmails(currentEmails);
+                document.querySelector('.email-modal')?.remove();
+                
+            } catch (error) {
+                alert('❌ Error deleting email: ' + error.message);
+            }
+        }
+
+        // UI Helpers
+        function showLoading() {
+            document.getElementById('emailList').innerHTML = '<div style="text-align:center;padding:3rem;"><div class="spinner"></div><p>Loading emails...</p></div>';
+        }
+
+        function showEmptyState(message) {
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📭</div><h2>${message}</h2></div>`;
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('emailList').innerHTML = `<div style="text-align:center;padding:3rem;color:red;"><div style="font-size:3rem;margin-bottom:1rem;">⚠️</div><h2>Error</h2><p>${message}</p></div>`;
         }
     </script>
 </body>
